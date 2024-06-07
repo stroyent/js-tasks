@@ -3,7 +3,7 @@
 let admin,
 	name;
 
-name = "Äæîí";
+name = "Ð”Ð¶Ð¾Ð½";
 
 admin = name;
 
@@ -15,11 +15,11 @@ let ourPlanetName,
 /* functions */
 
 function checkAge(age) {
-	return (age > 18) ? true : confirm('Ðîäèòåëè ðàçðåøèëè?');
+	return (age > 18) ? true : confirm('Ð Ð¾Ð´Ð¸Ñ‚ÐµÐ»Ð¸ Ñ€Ð°Ð·Ñ€ÐµÑˆÐ¸Ð»Ð¸?');
 }
 
 function checkAge(age) {
-	return (age > 18) || confirm('Ðîäèòåëè ðàçðåøèëè?');
+	return (age > 18) || confirm('Ð Ð¾Ð´Ð¸Ñ‚ÐµÐ»Ð¸ Ñ€Ð°Ð·Ñ€ÐµÑˆÐ¸Ð»Ð¸?');
 }
 
 function min(a, b) {
@@ -54,13 +54,13 @@ pow(x,n)
 /* lambda-functions */
 
 function ask(question, yes, no) {
-  if (confirm(question)) yes()
-  else no();
+	if (confirm(question)) yes()
+	else no();
 }
 
 ask(
-  "Âû ñîãëàñíû?",
-  () => alert("Âû ñîãëàñèëèñü."),
-  () => alert("Âû îòìåíèëè âûïîëíåíèå.")
-  );
+	"Ð’Ñ‹ ÑÐ¾Ð³Ð»Ð°ÑÐ½Ñ‹?",
+	() => alert("Ð’Ñ‹ ÑÐ¾Ð³Ð»Ð°ÑÐ¸Ð»Ð¸ÑÑŒ."),
+	() => alert("Ð’Ñ‹ Ð¾Ñ‚Ð¼ÐµÐ½Ð¸Ð»Ð¸ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ.")
+	);
 
