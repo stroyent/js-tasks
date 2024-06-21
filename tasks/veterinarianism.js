@@ -37,44 +37,45 @@ const vet_check_ins = [
   }
 ];
 
+function combineVisitInfo(pets, species_specs, vet_check_ins) {
+  const vet_visit_table = []
 
-const vet_visit_table = []
-
-let id,
-  name,
-  species,
-  diagnosis,
-  visited_on;
-
-for (visit of vet_check_ins) {
-  id = visit.id;
-  diagnosis = visit.diagnosis;
-  visited_on = visit.datetime;
-
-  for (pet of pets) {
-    if (id === pet.id) {
-      name = pet.name;
-      species_id = pet.species_id;
-      break;
-    }
-  }
-  for (species_item of species_specs) {
-    if (species_id === species_item.id) {
-      common_name = species_item.common_name;
-      nomenclature = species_item.nomenclature;
-      species = `${common_name} (${nomenclature})`;
-      break;
-    }
-    
-  }
-
-  vet_visit_table.push({
-    id,
+  let id,
     name,
     species,
     diagnosis,
-    visited_on,
-  });
-};
+    visited_on;
 
-console.log(vet_visit_table);
+  for (visit of vet_check_ins) {
+    id = visit.id;
+    diagnosis = visit.diagnosis;
+    visited_on = visit.datetime;
+
+    for (pet of pets) {
+      if (id === pet.id) {
+        name = pet.name;
+        species_id = pet.species_id;
+        break;
+      }
+    }
+    for (species_item of species_specs) {
+      if (species_id === species_item.id) {
+        common_name = species_item.common_name;
+        nomenclature = species_item.nomenclature;
+        species = `${common_name} (${nomenclature})`;
+        break;
+      }
+      
+    }
+
+    vet_visit_table.push({
+      id,
+      name,
+      species,
+      diagnosis,
+      visited_on,
+    });
+  };
+
+  return vet_visit_table;
+}
