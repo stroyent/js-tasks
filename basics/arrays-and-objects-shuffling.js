@@ -108,17 +108,60 @@ function sortByAge(users) {
 
 function shuffle(array) {
 	array.sort(function() {
-		return (Math.random() * 2 - 1) // рандомное число между -1 и 1. чёт чтобы получить целые, надо заморочиться, мож и так сойдёт
+		return Math.floor(Math.random() * 2 - 1);
 	})
 }
 
-let arr = [1, 2, 3];
 
-shuffle(arr);
-alert(arr);
+function fischerYatesShuffle(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		let j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+}
 
-shuffle(arr);
-alert(arr);
 
-shuffle(arr);
-alert(arr);
+// Получить средний возраст
+
+function getAverageAge(users) {
+	let sum = users.reduce((sum, user) => sum + user.age, 0);
+	return sum / users.length;
+}
+
+// Оставить уникальные элементы массива
+
+function unique(arr) {
+	let uniqueElements = [];
+	for (item of arr) {
+		if (!uniqueElements.includes(item)) {
+			uniqueElements.push(item);
+			}
+	}
+	return uniqueElements;
+}
+
+// Создайте объект с ключами из массива
+
+function groupById(arr){
+	return arr.reduce((result, user) => {
+		result[user.id] = user;
+		return result;
+	}, {});
+}
+
+// Сумма свойств объекта
+
+function sumSalaries(salaries) {
+	let salaries_array = Object.values(salaries);
+	let sum = 0; // либо salaries_array.reduce((sum, current) => sum + current, 0)
+	for (salary of salaries_array) {
+		sum += salary;
+	}
+	return sum;
+}
+
+// Подсчёт количества свойств объекта
+
+function count(obj) {
+	return Object.keys(obj).length;
+}
