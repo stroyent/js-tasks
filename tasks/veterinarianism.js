@@ -40,7 +40,6 @@ const vet_check_ins = [
 function combineVisitInfo(pets, species_specs, vet_check_ins) {
   const vet_visit_table = []
 
-
   for (visit of vet_check_ins) {	
 	let {id, diagnosis, datetime: visited_on} = visit;
 
@@ -60,3 +59,23 @@ function combineVisitInfo(pets, species_specs, vet_check_ins) {
 
   return vet_visit_table;
 }
+
+
+const vet_visit_table = combineVisitInfo(pets, species_specs, vet_check_ins);
+
+let cats_checked_in = vet_visit_table.reduce(function(number_of_cats, item) {
+	if (item.species.split(' (')[0] === 'cat') {
+		return number_of_cats + 1;
+	} else {
+		return number_of_cats;
+	}
+	
+}, 0);
+
+let dogs_checked_in = vet_visit_table.reduce(function(number_of_dogs, item) {
+	if (item.species.split(' (')[0] === 'dog') {
+		return number_of_dogs + 1;
+	} else {
+		return number_of_dogs;
+	}
+}, 0);
