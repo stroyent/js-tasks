@@ -40,33 +40,14 @@ const vet_check_ins = [
 function combineVisitInfo(pets, species_specs, vet_check_ins) {
   const vet_visit_table = []
 
-  let id,
-    name,
-    species,
-    diagnosis,
-    visited_on;
 
-  for (visit of vet_check_ins) {
-    id = visit.id;
-    diagnosis = visit.diagnosis;
-    visited_on = visit.datetime;
+  for (visit of vet_check_ins) {	
+	let {id, diagnosis, datetime: visited_on} = visit;
 
-    for (pet of pets) {
-      if (id === pet.id) {
-        name = pet.name;
-        species_id = pet.species_id;
-        break;
-      }
-    }
-    for (species_item of species_specs) {
-      if (species_id === species_item.id) {
-        common_name = species_item.common_name;
-        nomenclature = species_item.nomenclature;
-        species = `${common_name} (${nomenclature})`;
-        break;
-      }
-      
-    }
+	let {name, species_id} = pets.find(item => item.id === id);
+	
+	let {common_name, nomenclature} = species_specs.find(item => item.id === species_id);
+	species = `${common_name} (${nomenclature})`;
 
     vet_visit_table.push({
       id,
