@@ -165,3 +165,35 @@ function sumSalaries(salaries) {
 function count(obj) {
 	return Object.keys(obj).length;
 }
+
+// Деструктурирующее присваивание
+
+let user = {
+  name: "John",
+  years: 30
+};
+
+let {name, years: age, isAdmin = false} = user
+
+// Максимальная зарплата
+
+let salaries = {
+  "John": 100,
+  "Pete": 300,
+  "Mary": 250
+};
+
+function topSalary(salaries) {
+	if (Object.keys(salaries).length === 0) {
+		return null;
+	}
+	let max_salary = 0,
+		top_worker;
+	for (let [name, salary] of Object.entries(salaries)) {
+		if (salary > max_salary) {
+			max_salary = salary;
+			top_worker = name;
+		}
+	}
+	return top_worker;
+}
