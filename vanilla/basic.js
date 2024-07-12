@@ -57,11 +57,6 @@ window.onload = function() {
         div.addEventListener("mouseleave", () => {
             div.style.transform = "scale(1)" + ` rotate(${angle}deg)`;
         });
-        div.addEventListener("animationend", () => {
-            div.style.transition = "all 0s";
-            angle = 0;
-            div.style.transform = element.style.transform.split(' ')[0] + ` rotate(${angle}deg)`;
-        });
     }, 1000);
 }
 
