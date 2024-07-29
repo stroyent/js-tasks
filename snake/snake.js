@@ -3,6 +3,8 @@ window.onload = function () {
     const turns = [];
     const turnDirections = [];
 
+    const snakeCoordinates = [];
+
     const opposites = {
         'left': 'right',
         'right': 'left',
@@ -10,129 +12,125 @@ window.onload = function () {
         'down': 'up',
     };
 
-    let newDirection;
-    let tailPass = false;
-
-    const head = {
+    let direction,
+        newDirection;
+    
+    const apple = {
         x: null,
         y: null,
-        direction: null,
-    };
+        element: null,
+    }
 
-    const tail = {
-        x: null,
-        y: null,
-        direction: null,
-    };
+    let segment_id = 1;
 
 
     function spawn() {
-        head.x = 1;
-        head.y = 0;
-        head.direction = 'right';
+        snakeCoordinates.push({x: 1, y: 0, direction: 'right'}, {x: 0, y: 0, direction: 'right'});
 
-        tail.x = 0;
-        tail.y = 0;
-        tail.direction = 'right';
-
-        document.getElementById(`${head.x} ${head.y}`).className = 'snake';
-        document.getElementById(`${tail.x} ${tail.y}`).className = 'snake';
-
+        for (segment of snakeCoordinates) {
+            let snekDiv = document.createElement('div');
+            document.getElementById('game').appendChild(snekDiv);
+            snekDiv.className = 'snake';
+            snekDiv.id = `${segment_id}`;
+            segment.element = document.getElementById(snekDiv.id);
+            segment_id++;
+        }
     }
 
     
-    function spawnApple() {
+    function initializeApple() {
+        respawnApple();
+
+        let appleDiv = document.createElement('div');
+        document.getElementById('game').appendChild(appleDiv);
+        appleDiv.className = 'apple';
+        appleDiv.id = 'apple';
+
+        apple.element = document.getElementById('apple');
+        apple.element.style.gridColumn = `${apple.x + 1} / span 1`;
+        apple.element.style.gridRow = `${apple.y + 1} / span 1`;
+    }
+
+
+    function respawnApple() {
         let x, y;
         while (true) {
             x = Math.floor(Math.random() * fieldSize);
             y = Math.floor(Math.random() * fieldSize);
-            if (document.getElementById(`${x} ${y}`).className === 'cell') {
+            if (!snakeCoordinates.find(item => item.x === x && item.y === y)) {
                 break;
             }
         }
-        document.getElementById(`${x} ${y}`).className = 'apple';
-
-
+        apple.x = x;
+        apple.y = y;
     }
 
 
-    function elongateSnek() {
-        tailPass = true;
+    function elongateSnek(segment) {
+        let newSegment = document.createElement('div');
+        document.getElementById('game').appendChild(newSegment);
+        newSegment.style.visibility = 'hidden';
+        newSegment.className = 'snake';
+        newSegment.id = `${++segment_id}`;
+
+        let {x, y, direction} = segment;
+
+        snakeCoordinates.push({
+            x,
+            y,
+            direction,
+            element: document.getElementById(newSegment.id),
+        });
     }
 
 
-    function moveHead() {
+    function moveSnek() {
+        let head = snakeCoordinates[0];
         newDirection = turnDirections.shift();
-        console.log(`newDirection = ${newDirection}`);
-        if (newDirection != undefined && newDirection != opposites[head.direction] && newDirection != head.direction) {
-            head.direction = newDirection;
-            turns.push([head.x, head.y, head.direction]);
-        }
-        if (head.direction === 'left') {
-            head.x = head.x - 1;
-        }
-        else if (head.direction === 'right') {
-            head.x = head.x + 1;
-        }
-        else if (head.direction === 'up') {
-            head.y = head.y - 1;
-        }
-        else if (head.direction === 'down') {
-            head.y = head.y + 1;
+
+        if (newDirection != undefined && newDirection != opposites[head.direction] && newDirection != direction) {
+            direction = newDirection;
+            turns.push({x: head.x, y: head.y, direction: direction});
         }
 
+        if (turns.length > 0) {
+            for (let i = turns.length - 1; i >= 0; i--) {
+                let turn = turns[i];
+                let snakeBend = snakeCoordinates.find(item => item.x === turn.x && item.y === turn.y);
+                if (snakeBend === undefined) {
+                    turns.shift();
+                } else {
+                    snakeBend.direction = turn.direction;
+                }
+            }
+        }
+
+        let lastTailPosition = {...snakeCoordinates.at(-1)}; //for elongation
+
+        for (segment of snakeCoordinates) {
+            if (segment.direction === 'left') {
+                segment.x--;
+            } else if (segment.direction === 'right') {
+                segment.x++;
+            } else if (segment.direction === 'up') {
+                segment.y--;
+            } else if (segment.direction === 'down') {
+                segment.y++;
+            }
+        }
+        
         if (head.x >= fieldSize || head.y >= fieldSize || head.x < 0 || head.y < 0 ||
-            document.getElementById(`${head.x} ${head.y}`).className === 'snake'
+            snakeCoordinates.filter(item => item.x === head.x && item.y === head.y).length > 1
         ) {
             gameOver();
         }
-        if (document.getElementById(`${head.x} ${head.y}`).className === 'apple') {
-            elongateSnek();
-            spawnApple();
-        }
-        document.getElementById(`${head.x} ${head.y}`).className = 'snake';
-    }
 
-
-    function moveTail() {
-        if (tailPass === true) {
-            tailPass = false;
-            return;
-        }
-
-        document.getElementById(`${tail.x} ${tail.y}`).className = 'cell';
-
-        if (tail.direction === 'left') {
-            tail.x = tail.x - 1;
-        }
-        else if (tail.direction === 'right') {
-            tail.x = tail.x + 1;
-        }
-        else if (tail.direction === 'up') {
-            tail.y = tail.y - 1;
-        }
-        else if (tail.direction === 'down') {
-            tail.y = tail.y + 1;
-        }
-
-        if (turns.length > 0 && tail.x === turns[0][0] && tail.y === turns[0][1]) {
-            tail.direction = turns[0][2];
-            turns.shift();
+        if (head.x === apple.x && head.y === apple.y) {
+            elongateSnek(lastTailPosition);
+            respawnApple();
         }
     }
-
-
-    function drawField() {
-        for (let y = 0; y < 10; y++) {
-            for (let x = 0; x < 10; x++) {
-                let cell = document.createElement('div');
-                document.getElementById('game').appendChild(cell);
-                cell.className = 'cell';
-                cell.id = `${x} ${y}`
-            }
-        }
-    }
-
+    
 
     function gameOver() {
         alert("Game Over");
@@ -155,11 +153,22 @@ window.onload = function () {
     });
 
 
-    drawField();
+    function drawState() {
+        for (segment of snakeCoordinates) {
+            segment.element.style.gridColumn = `${segment.x + 1} / span 1`;
+            segment.element.style.gridRow = `${segment.y + 1} / span 1`;
+        }
+        snakeCoordinates.at(-1).element.style.visibility = 'visible';
+
+        apple.element.style.gridColumn = `${apple.x + 1} / span 1`;
+        apple.element.style.gridRow = `${apple.y + 1} / span 1`;
+    }
+
+
     spawn();
-    spawnApple();
+    initializeApple();
     const gameCycle = setInterval(() => {
-        moveHead();
-        moveTail();
+        moveSnek();
+        drawState();
     }, 250);
 }
