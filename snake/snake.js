@@ -133,10 +133,39 @@ window.onload = function () {
     
 
     function gameOver() {
-        alert("Game Over");
         clearInterval(gameCycle);
+        let restart = confirm("Game Over. Try again?");
+        if (restart) {
+            for (segment of snakeCoordinates) {
+                segment.element.remove()
+            }
+            snakeCoordinates.length = 0;
+            segment_id = 1;
+            spawn();
+            gameCycle = setInterval(() => {
+                moveSnek();
+                drawState();
+            }, 250);
+        }
     }
 
+    function pause() {
+        const pauseButton = document.getElementById('pauseButton');
+        const pauseUnpause = function() {
+            if (pauseButton.innerText === 'Pause') {
+                clearInterval(gameCycle);
+                pauseButton.innerText = 'Resume';
+            }
+            else {
+                gameCycle = setInterval(() => {
+                    moveSnek();
+                    drawState();
+                }, 250);
+                pauseButton.innerText = 'Pause';
+            }
+        }
+        pauseButton.addEventListener('click', pauseUnpause);
+    }
 
     document.addEventListener('keydown', (event) => {
         if (event.code === 'ArrowDown') {
@@ -164,10 +193,10 @@ window.onload = function () {
         apple.element.style.gridRow = `${apple.y + 1} / span 1`;
     }
 
-
     spawn();
     initializeApple();
-    const gameCycle = setInterval(() => {
+    pause();
+    let gameCycle = setInterval(() => {
         moveSnek();
         drawState();
     }, 250);
