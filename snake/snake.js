@@ -1,5 +1,7 @@
 window.onload = function () {
-    const fieldSize = 10;
+    let fieldWidth = 10;
+    let fieldHeight = 10;
+    const cellSizePx = 50;
     const turns = [];
     const turnDirections = [];
 
@@ -23,6 +25,31 @@ window.onload = function () {
 
     let segment_id = 1;
 
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        let data = new FormData(dimensionsForm);
+        fieldWidth = Number(data.get('width'));
+        fieldHeight = Number(data.get('height'));
+        resizeField();
+        restartGame();
+        const pauseButton = document.getElementById('pauseButton');
+        if (pauseButton.innerText === 'Resume') {
+            clearInterval(gameCycle);
+        };
+    }
+
+    function resizeField() {
+        const field = document.getElementById('game');
+        field.style.cssText += `
+            width: ${cellSizePx * fieldWidth}px;
+            height: ${cellSizePx * fieldHeight}px;
+            grid-template-rows: repeat(${fieldHeight}, 1fr);
+            grid-template-columns: repeat(${fieldWidth}, 1fr);
+        `;
+    }
+
+
+      
 
     function spawn() {
         snakeCoordinates.push({x: 1, y: 0, direction: 'right'}, {x: 0, y: 0, direction: 'right'});
@@ -55,8 +82,8 @@ window.onload = function () {
     function respawnApple() {
         let x, y;
         while (true) {
-            x = Math.floor(Math.random() * fieldSize);
-            y = Math.floor(Math.random() * fieldSize);
+            x = Math.floor(Math.random() * fieldWidth);
+            y = Math.floor(Math.random() * fieldHeight);
             if (!snakeCoordinates.find(item => item.x === x && item.y === y)) {
                 break;
             }
@@ -66,14 +93,12 @@ window.onload = function () {
     }
 
 
-    function elongateSnek(segment) {
+    function elongateSnek(x, y, direction) {
         let newSegment = document.createElement('div');
         document.getElementById('game').appendChild(newSegment);
         newSegment.style.visibility = 'hidden';
         newSegment.className = 'snake';
         newSegment.id = `${++segment_id}`;
-
-        let {x, y, direction} = segment;
 
         snakeCoordinates.push({
             x,
@@ -105,7 +130,7 @@ window.onload = function () {
             }
         }
 
-        let lastTailPosition = {...snakeCoordinates.at(-1)}; //for elongation
+        let {x, y, direction: tail_direction} = snakeCoordinates.at(-1);
 
         for (segment of snakeCoordinates) {
             if (segment.direction === 'left') {
@@ -119,14 +144,14 @@ window.onload = function () {
             }
         }
         
-        if (head.x >= fieldSize || head.y >= fieldSize || head.x < 0 || head.y < 0 ||
+        if (head.x >= fieldWidth || head.y >= fieldHeight || head.x < 0 || head.y < 0 ||
             snakeCoordinates.filter(item => item.x === head.x && item.y === head.y).length > 1
         ) {
             gameOver();
         }
 
         if (head.x === apple.x && head.y === apple.y) {
-            elongateSnek(lastTailPosition);
+            elongateSnek(x, y, tail_direction);
             respawnApple();
         }
     }
@@ -136,17 +161,21 @@ window.onload = function () {
         clearInterval(gameCycle);
         let restart = confirm("Game Over. Try again?");
         if (restart) {
-            for (segment of snakeCoordinates) {
-                segment.element.remove()
-            }
-            snakeCoordinates.length = 0;
-            segment_id = 1;
-            spawn();
-            gameCycle = setInterval(() => {
-                moveSnek();
-                drawState();
-            }, 250);
+            restartGame();
         }
+    }
+
+    function restartGame() {
+        for (segment of snakeCoordinates) {
+            segment.element.remove()
+        }
+        snakeCoordinates.length = 0;
+        segment_id = 1;
+        spawn();
+        gameCycle = setInterval(() => {
+            moveSnek();
+            drawState();
+        }, 250);
     }
 
     function pause() {
@@ -200,4 +229,9 @@ window.onload = function () {
         moveSnek();
         drawState();
     }, 250);
+
+    const dimensionsForm = document.getElementById('dimensions-form');
+    dimensionsForm.elements.width.value = `${fieldWidth}`;
+    dimensionsForm.elements.height.value = `${fieldHeight}`;
+    dimensionsForm.addEventListener('submit', handleFormSubmit);
 }
