@@ -35,19 +35,19 @@ window.onload = function() {
         angle = angle + 90;
         element.style.backgroundColor = randomRGB();
         element.style.transform = element.style.transform.split(' ')[0] + ` rotate(${angle}deg)`;
+
+        if (angle === 360) {
+            setTimeout(() => {
+                element.style.transition = "all 0s";
+                angle = 0;
+                element.style.transform = element.style.transform.split(' ')[0] + ` rotate(${angle}deg)`;
+            }, 500);
+        }
     }
 
     const div = makeDiv();
     document.body.append(div);
     let angle = 0;
-    
-    div.addEventListener("animationend", () => {
-        if (angle === 360) {
-            element.style.transition = "all 0s";
-            angle = 0;
-            element.style.transform = element.style.transform.split(' ')[0] + ` rotate(${angle}deg)`;
-        }
-    })
 
     setInterval(() => {
         changeElement(div.id);
