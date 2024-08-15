@@ -1,3 +1,10 @@
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .playingField {
     width: 500px;
     height: 500px;
@@ -14,13 +21,77 @@
 }
 
 .snake {
+    box-sizing: border-box;
     width: 50px;
     height: 50px;
-    background-color: green;
+    background-color: #44AF44;
+    border-radius: 10px;
+    border: 2px solid #2E7A2F;
+}
+
+.head {
+    background-color: #44B8AD;
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    position: relative;
+}
+
+.head::before {
+    content: "";
+    color: #2E7A2F;
+    width: 8px;
+    height: 8px;
+    background-color: #2E7A2F;
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+    border-radius: 2px;
+    justify-self: center;
+    align-self: center;
+}
+
+.head::after {
+    content: "";
+    color: #2E7A2F;
+    width: 8px;
+    height: 8px;
+    background-color: #2E7A2F;
+    grid-column: 4 / span 1;
+    grid-row: 2 / span 1;
+    border-radius: 2px;
+    justify-self: center;
+    align-self: center;
 }
 
 .apple {
+    box-sizing: border-box;
     width: 50px;
     height: 50px;
-    background-color: red;
+    border-radius: 50%;
+    background-image: radial-gradient(at top left, #8ffa02, #e80000);
+    position: relative;
+}
+
+.apple::before {
+    content: "";
+    width: 5px;
+    height: 25px;
+    background-color: brown;
+    border-radius: 50%/50%;
+    transform: rotate(30deg);
+    position: absolute;
+    top: -15px;
+    left: 30px;
+}
+
+.apple::after {
+    content: "";
+    width: 10px;
+    height: 20px;
+    background-color: rgb(3, 166, 0);
+    border-radius: 50%/50%;
+    transform: rotate(-30deg);
+    position: absolute;
+    top: -20px;
+    left: 20px;
 }
