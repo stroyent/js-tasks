@@ -14,6 +14,13 @@ window.onload = function () {
         'down': 'up',
     };
 
+    const rotationDegrees = {
+        'left': 270,
+        'right': 90,
+        'up': 0,
+        'down': 180,
+    };
+
     let direction,
         newDirection;
     
@@ -62,6 +69,9 @@ window.onload = function () {
             segment.element = document.getElementById(snekDiv.id);
             segment_id++;
         }
+
+        snakeCoordinates[0].element.className += ' head';
+        
     }
 
     
@@ -220,6 +230,10 @@ window.onload = function () {
 
         apple.element.style.gridColumn = `${apple.x + 1} / span 1`;
         apple.element.style.gridRow = `${apple.y + 1} / span 1`;
+
+        
+
+        snakeCoordinates[0].element.style.transform = `rotate(${rotationDegrees[snakeCoordinates[0].direction]}deg)`;
     }
 
     spawn();

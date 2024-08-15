@@ -8,15 +8,19 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="game" class="playingField">
+    <div id="main-container" class="mainContainer">
+        <div id="game" class="playingField"></div>
+    
+        <button type="button" id="pauseButton">Pause</button>
+        <form action="/snake.js" name="dimensions" id="dimensions-form">
+            <label for="width">Field width:</label>
+            <input type="text" id="width" name="width" required><br><br>
+            <label for="height">Field height:</label>
+            <input type="text" id="height" name="height" required><br><br>
+            <input type="submit" value="Submit">
+        </form> 
     </div>
-    <button type="button" id="pauseButton">Pause</button> 
-    <form action="/snake.js" name="dimensions" id="dimensions-form">
-        <label for="width">Field width:</label>
-        <input type="text" id="width" name="width" required><br><br>
-        <label for="height">Field height:</label>
-        <input type="text" id="height" name="height" required><br><br>
-        <input type="submit" value="Submit">
-      </form> 
+    
+    
 </body>
 </html>
